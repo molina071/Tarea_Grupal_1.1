@@ -1,78 +1,77 @@
-package com.example.tarea_grupal_11;
+package com.example.tarea_grupal_11
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.content.Intent
+import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import com.example.tarea_grupal_11.Classes.Operaciones
+import com.example.tarea_grupal_11.Classes.ResultsActivity
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+class MainActivity : AppCompatActivity() {
 
-import com.example.tarea_grupal_11.Classes.Operaciones;
+    private lateinit var num1: EditText
+    private lateinit var num2: EditText
+    private lateinit var btnMultiplicar: Button
+    private lateinit var btnDividir: Button
+    private lateinit var btnSuma: Button
+    private lateinit var btnResta: Button
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContentView(R.layout.activity_main)
 
-public class MainActivity extends AppCompatActivity {
+        btnMultiplicar = findViewById(R.id.btmultiplicacion)
+        btnDividir = findViewById(R.id.btdividir)
+        btnSuma = findViewById(R.id.btsuma)
+        btnResta = findViewById(R.id.btresta)
+        num1 = findViewById(R.id.num1)
+        num2 = findViewById(R.id.num2)
 
-
-    EditText num1;
-    EditText num2;
-    TextView result;
-    Button btn_multiplicar;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
-
-        btn_multiplicar = ( Button) findViewById(R.id.btmultiplicacion);
-        num1 = (EditText) findViewById(R.id.num1);
-        num2 = (EditText) findViewById(R.id.num2);
-        result = (android.widget.TextView) findViewById(R.id.lresultado);
-
-        btn_multiplicar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                multiplicar();
-            }
-        });
-    }
-
-    private void multiplicar() {
-        if (num1.getText().toString().isEmpty() ||
-                num2.getText().toString().isEmpty()) {
-            return;
+        btnMultiplicar.setOnClickListener {
+            realizarOperacion(Operaciones::multiplicacion)
         }
 
-        double valorNum1 = Double.parseDouble(num1.getText().toString());
-        double valorNum2 = Double.parseDouble(num2.getText().toString());
-        Operaciones op = new Operaciones(valorNum1, valorNum2);
+        btnDividir.setOnClickListener {
+            realizarOperacion(Operaciones::division)
+        }
 
-        double resultado = op.multiplicacion();
+        btnSuma.setOnClickListener {
+            realizarOperacion(Operaciones::suma)
+        }
 
-        Intent intent = new Intent(this, result.getClass());
-        intent.putExtra("resultado", resultado);
-        startActivity(intent);
-
+        btnResta.setOnClickListener {
+            realizarOperacion(Operaciones::resta)
+        }
     }
 
-    private void limpiar() {
-         num1.setText(null);
-         num2.setText(null);
+    private fun realizarOperacion(operacion: (Operaciones) -> Double) {
+        val num1Str = num1.text.toString()
+        val num2Str = num2.text.toString()
+
+        if (num1Str.isEmpty() || num2Str.isEmpty()) {
+            return
+        }
+
+        val valorNum1 = num1Str.toDoubleOrNull()
+        val valorNum2 = num2Str.toDoubleOrNull()
+
+        if (valorNum1 == null || valorNum2 == null) {
+            return
+        }
+
+        val op = Operaciones(valorNum1, valorNum2)
+        val resultado = operacion(op)
+
+        val intent = Intent(this, ResultsActivity::class.java)
+        intent.putExtra("resultado", resultado)
+        startActivity(intent)
     }
 
-
-
-
-
-
-
-
-
+    private fun limpiar() {
+        num1.text.clear()
+        num2.text.clear()
+    }
 }
