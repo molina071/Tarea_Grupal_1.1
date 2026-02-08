@@ -12,12 +12,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.tarea_grupal_11.Classes.Suma;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button btsuma, btresta;
-    EditText num1, num2;
+    int suma;
+
+    EditText num1 , num2, result;
+    Button btn_multiplicar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,54 +26,43 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        num1 = findViewById(R.id.num1);
-        num2 = findViewById(R.id.num2);
+        btn_multiplicar = ( Button) findViewById(R.id.btn_multiplicar);
 
-        btsuma.setOnClickListener(new View.OnClickListener() {
+
+
+        btn_multiplicar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(getApplicationContext(),"hola",Toast.LENGTH_LONG.show());
-                Sumar();
+
+                double valorNum1 = 0;
+                double valorNum2 = 0;
+
+                num1 = (EditText) findViewById(R.id.num1);
+                valorNum1 = Double.parseDouble(num1.getText().toString());
+                num2 = (EditText) findViewById(R.id.num2);
+                valorNum2 = Double.parseDouble(num1.getText().toString());
+                result = (EditText) findViewById(R.id.result);
+
+                if (valorNum1 < 0 || valorNum2 < 0) {
+                    Toast.makeText(getApplicationContext(), "los numero ingresados no deben ser menores a 0: ", Toast.LENGTH_LONG).show();
+                }else
+                multiplicar(valorNum1, valorNum2);
+                limpiar();
             }
-
-        });
-
-        btresta.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Toast.makeText(getApplicationContext(),"hola",Toast.LENGTH_LONG.show());
-                Restar();
-            }
-
-        });
-        
-        
-
-
-
-
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
         });
     }
+    private void limpiar() {
+         num1.setText(null);
+         num2.setText(null);
+    }
+    private void multiplicar(double num1 , double num2 ) {
 
-    private void Restar() {
+        double multi = num1 * num2;
+
+        String resultado = String.valueOf(multi);
+
+        result.setText(resultado);
     }
 
-    private void Sumar() {
 
-        if (num1.getText().toString().isEmpty() ||
-                num2.getText().toString().isEmpty()) {
-            return;
-        }
-        double valorNum1 = Double.parseDouble(num1.getText().toString());
-        double valorNum2 = Double.parseDouble(num2.getText().toString());
-
-        Suma operacion = new Suma(valorNum1, valorNum2);
-
-    }
-    }
 }
